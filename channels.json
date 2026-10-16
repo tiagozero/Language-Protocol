@@ -1,0 +1,24 @@
+{
+  "languages": {
+    "en": {
+      "channels": [
+        { "id": "@bbclearningenglish", "name": "BBC Learning English", "videoLimit": 12 },
+        { "id": "@sherlock_holmes_magpie_audio", "name": "Sherlock Holmes Magpie Audio", "videoLimit": 0 },
+        { "id": "@gatesofimagination", "name": "Gates of Imagination", "videoLimit": 0}
+      ],
+      "playlists": [
+        { "id": "PLcetZ6gSk96_Kh2b2K2O2uaI14lnp6w4h", "channelId": "@bbclearningenglish" },
+        { "id": "PLZrCyG_xOH1jC5siVt75wbGGvPRJleTRy", "channelId": "@sherlock_holmes_magpie_audio" },
+        { "id": "PLFA6HwSbUABqCdkGeON5a8t2eMTEw7Qvv", "channelId": "@gatesofimagination" }
+      ]
+    },
+    "fr": {
+      "channels": [],
+      "playlists": []
+    },
+    "ja": {
+      "channels": [],
+      "playlists": []
+    }
+  }
+}
