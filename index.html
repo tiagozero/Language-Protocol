@@ -23,6 +23,9 @@
     [hidden] { display: none !important; }
 
     .view { display: none; }
+    body[data-view="home"]       #view-home       { display: block; }
+    body[data-view="favorites"]  #view-favorites  { display: block; }
+    body[data-view="history"]    #view-history    { display: block; }
     body[data-view="videos"]     #view-videos     { display: block; }
     body[data-view="channels"]   #view-channels   { display: block; }
     body[data-view="channel"]    #view-channel    { display: block; }
@@ -515,32 +518,242 @@
     html[data-theme="dark"] .lang-opt.active { border-color: #64b5f6; background: #1e3a5f; color: #90caf9; }
     html[data-theme="dark"] .lang-opt .native { color: #7b859a; }
     html[data-theme="dark"] .lang-opt.active .native { color: #64b5f6; }
+
+    /* ---- Home / favorites / history ---- */
+    .home-head { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end; justify-content: space-between; margin-bottom: 6px; }
+    .home-title { font-size: 1.6rem; font-weight: 800; color: #1f2430; margin: 0; }
+    .home-sub { margin: 4px 0 0; font-size: 0.9rem; color: #667085; }
+    .home-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+    .home-stat { min-width: 104px; padding: 10px 14px; border-radius: 12px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03); }
+    .home-stat b { display: block; font-size: 1.35rem; line-height: 1.2; color: #0d47a1; }
+    .home-stat span { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #8a94a6; }
+    .home-section { margin-top: 30px; }
+    .home-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .home-section-head h2 { margin: 0; font-size: 1.05rem; font-weight: 800; color: #1f2430; }
+    .home-seeall { font-size: 0.84rem; font-weight: 600; color: #1565c0; }
+    .home-seeall:hover { text-decoration: underline; }
+    .home-muted { font-size: 0.88rem; color: #8a94a6; padding: 14px 16px; background: #fff; border: 1px dashed #d0d5dd; border-radius: 12px; }
+    .home-continue-grid { margin-top: 14px; }
+    .card-reason { margin-top: 6px; font-size: 0.72rem; font-weight: 600; color: #1565c0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-fav { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(15,20,30,0.7); color: #fff; font-size: 1rem; line-height: 1; opacity: 0; transition: opacity 0.15s, background 0.15s; backdrop-filter: blur(4px); }
+    .card:hover .card-fav, .card-fav.on { opacity: 1; }
+    .card-fav.on { color: #ff6b81; }
+    .card-fav:hover { background: rgba(15,20,30,0.9); }
+    .card.has-fav .card-delete { right: 44px; }
+    @media (hover: none) { .card-fav, .card-delete { opacity: 1; } }
+
+    .home-vocab { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(260px, 1.4fr); gap: 16px; }
+    .home-panel { background: #fff; border-radius: 12px; padding: 16px 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03); }
+    .home-panel h3 { margin: 0 0 10px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #667085; }
+    .hv-total { font-size: 2rem; font-weight: 800; color: #0d47a1; line-height: 1.1; }
+    .hv-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: #eceef1; margin: 12px 0 10px; }
+    .hv-bar i { display: block; height: 100%; }
+    .hv-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 0.8rem; color: #667085; }
+    .hv-legend span { display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hv-legend i { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .hv-words { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .hv-word { display: flex; align-items: baseline; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid #eceef1; min-width: 0; }
+    .hv-word:last-child { border-bottom: 0; padding-bottom: 0; }
+    .hv-word b { font-size: 0.95rem; color: #0d47a1; flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hv-word span { font-size: 0.86rem; color: #166534; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hv-word em { flex: 0 0 auto; font-style: normal; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 6px; color: #fff; }
+    .home-btn { display: inline-flex; align-items: center; padding: 9px 14px; border-radius: 8px; background: #1976d2; color: #fff; font-size: 0.85rem; font-weight: 600; }
+    .home-btn:hover { background: #1565c0; }
+
+    .hist-list { display: flex; flex-direction: column; gap: 10px; }
+    .hist-row { position: relative; display: flex; gap: 14px; align-items: center; padding: 10px; background: #fff; border-radius: 12px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03); transition: box-shadow 0.15s, transform 0.15s; }
+    .hist-row:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.1); transform: translateY(-1px); }
+    .hist-thumb { position: relative; flex: 0 0 160px; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; background: #e9edf2; }
+    .hist-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hist-thumb .card-progress { height: 3px; }
+    .hist-info { flex: 1; min-width: 0; }
+    .hist-title { font-weight: 600; font-size: 0.92rem; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .hist-meta { margin-top: 4px; font-size: 0.78rem; color: #8a94a6; }
+    .hist-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+    .hist-actions button { width: 32px; height: 32px; border-radius: 8px; background: #f4f5f7; color: #667085; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; }
+    .hist-actions button:hover { background: #e2e8f0; color: #1f2430; }
+    .hist-actions .fav.on { color: #e11d48; }
+    .hist-actions .rm:hover { background: #fdf2f3; color: #c62828; }
+    .page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .page-toolbar h2 { margin: 0; font-size: 1.2rem; font-weight: 800; }
+    .tb-btn { padding: 8px 14px; border-radius: 8px; background: #fff; border: 1px solid #d0d5dd; color: #1f2430; font-size: 0.84rem; font-weight: 600; }
+    .tb-btn:hover { background: #fdf2f3; border-color: #ef9a9a; color: #c62828; }
+    #watch-fav { font-size: 1.05rem; }
+    #watch-fav.on { color: #e11d48; }
+
+    @media (max-width: 820px) {
+      .tabs { order: 3; flex: 1 0 100%; overflow-x: auto; }
+      .tab { white-space: nowrap; }
+      .home-vocab { grid-template-columns: 1fr; }
+      .hist-thumb { flex-basis: 112px; }
+    }
+    html[data-theme="dark"] .home-title, html[data-theme="dark"] .home-section-head h2, html[data-theme="dark"] .page-toolbar h2 { color: #e6e9ef; }
+    html[data-theme="dark"] .home-sub, html[data-theme="dark"] .hv-legend, html[data-theme="dark"] .home-panel h3 { color: #9aa3b5; }
+    html[data-theme="dark"] .home-stat, html[data-theme="dark"] .home-panel, html[data-theme="dark"] .hist-row { background: #1b1f2a; box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04); }
+    html[data-theme="dark"] .home-stat b, html[data-theme="dark"] .hv-total, html[data-theme="dark"] .hv-word b { color: #90caf9; }
+    html[data-theme="dark"] .hv-word span { color: #86efac; }
+    html[data-theme="dark"] .hv-word { border-bottom-color: #2e3446; }
+    html[data-theme="dark"] .hv-bar { background: #2e3446; }
+    html[data-theme="dark"] .home-muted { background: #1b1f2a; border-color: #2e3446; color: #9aa3b5; }
+    html[data-theme="dark"] .home-seeall, html[data-theme="dark"] .card-reason { color: #64b5f6; }
+    html[data-theme="dark"] .hist-thumb { background: #12151c; }
+    html[data-theme="dark"] .hist-actions button { background: #262c3b; color: #9aa3b5; }
+    html[data-theme="dark"] .hist-actions button:hover { background: #353d52; color: #e6e9ef; }
+    html[data-theme="dark"] .hist-actions .fav.on, html[data-theme="dark"] #watch-fav.on { color: #ff6b81; }
+    html[data-theme="dark"] .hist-actions .rm:hover { background: #3a1f23; color: #ef9a9a; }
+    html[data-theme="dark"] .tb-btn { background: #1b1f2a; border-color: #2e3446; color: #e6e9ef; }
+    html[data-theme="dark"] .tb-btn:hover { background: #3a1f23; border-color: #7f2d34; color: #ef9a9a; }
+
+    /* ---- Quick buttons + side drawer ---- */
+    .home-quick { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 30px; }
+    .quick-btn { display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px 20px 12px 12px; border-radius: 999px; border: 1px solid #d0d5dd; background: #fff; color: #1f2430; font-size: 1rem; font-weight: 700; text-align: left; transition: background 0.15s, border-color 0.15s, transform 0.15s; }
+    .quick-btn:hover { background: #f4f7fb; border-color: #b6bfcc; transform: translateY(-1px); }
+    .quick-ico { flex: 0 0 auto; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .quick-ico.hist { background: rgba(16,185,129,0.14); color: #10b981; }
+    .quick-ico.fav  { background: rgba(245,158,11,0.16); color: #f59e0b; }
+    .quick-label { flex: 1; min-width: 0; }
+    .quick-count { font-size: 0.82rem; font-weight: 600; color: #8a94a6; }
+    .quick-chev { flex: 0 0 auto; color: #98a2b3; }
+    #side-backdrop { position: fixed; inset: 0; z-index: 900; background: rgba(10,14,22,0.5); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    #side-backdrop.open { opacity: 1; pointer-events: auto; }
+    #side-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 901; width: 440px; max-width: 92vw; display: flex; flex-direction: column; background: #f7f9fb; box-shadow: -12px 0 32px rgba(0,0,0,0.2); transform: translateX(100%); visibility: hidden; transition: transform 0.25s ease, visibility 0s linear 0.25s; }
+    #side-drawer.open { transform: translateX(0); visibility: visible; transition: transform 0.25s ease; }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 16px 12px 20px; border-bottom: 1px solid #e2e4e8; }
+    .drawer-head h2 { margin: 0; font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .drawer-head h2 small { font-size: 0.8rem; font-weight: 600; color: #8a94a6; }
+    .drawer-tools { display: flex; align-items: center; gap: 8px; }
+    #drawer-close { width: 34px; height: 34px; border-radius: 8px; background: #eef2f6; color: #1f2430; font-size: 1rem; }
+    #drawer-close:hover { background: #dbe3ec; }
+    #drawer-body { flex: 1; overflow-y: auto; padding: 14px 16px 24px; }
+    #drawer-body .hist-thumb { flex-basis: 112px; }
+    #drawer-body .empty-state { margin-top: 40px; }
+    @media (max-width: 620px) { .home-quick { grid-template-columns: 1fr; } }
+    html[data-theme="dark"] .quick-btn { background: #1a1d1f; border-color: #3a3f45; color: #f3f4f6; }
+    html[data-theme="dark"] .quick-btn:hover { background: #22262a; border-color: #565d66; }
+    html[data-theme="dark"] .quick-ico.hist { background: rgba(52,211,153,0.14); color: #34d399; }
+    html[data-theme="dark"] .quick-ico.fav  { background: rgba(251,191,36,0.16); color: #fbbf24; }
+    html[data-theme="dark"] .quick-chev { color: #5b626c; }
+    html[data-theme="dark"] #side-drawer { background: #12151c; box-shadow: -12px 0 32px rgba(0,0,0,0.6); }
+    html[data-theme="dark"] .drawer-head { border-bottom-color: #2e3446; }
+    html[data-theme="dark"] #drawer-close { background: #262c3b; color: #e6e9ef; }
+    html[data-theme="dark"] #drawer-close:hover { background: #353d52; }
+
+    .home-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 30px; }
+    a.quick-btn { text-decoration: none; }
+    .quick-ico.vocab { background: rgba(20,184,166,0.14); color: #0d9488; }
+    html[data-theme="dark"] .quick-ico.vocab { background: rgba(45,212,191,0.14); color: #2dd4bf; }
+    @media (max-width: 900px) { .home-actions { grid-template-columns: 1fr; } }
+  
+    /* ---- Floating bottom dock ---- */
+    :root { --dock-bg: rgba(255,255,255,0.78); --dock-border: rgba(0,0,0,0.08); --dock-fg: #667085; --dock-fg-hi: #1f2430; --dock-accent: #0f9d74; --dock-accent-bg: rgba(15,157,116,0.14); --dock-shadow: 0 10px 30px rgba(0,0,0,0.18); }
+    html[data-theme="dark"] { --dock-bg: rgba(24,28,28,0.82); --dock-border: rgba(255,255,255,0.09); --dock-fg: #9aa3b5; --dock-fg-hi: #e6e9ef; --dock-accent: #2dd4a0; --dock-accent-bg: rgba(45,212,160,0.14); --dock-shadow: 0 12px 34px rgba(0,0,0,0.6); }
+    #app-header { display: none !important; }
+    .page { padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px)); }
+    #dock { transition: transform .28s ease, opacity .28s ease; }
+    #dock.away { transform: translate(-50%, calc(100% + 32px)); opacity: 0; pointer-events: none; }
+    body[data-view="watch"] #dock { display: none; }
+    #dock { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 40; max-width: calc(100vw - 16px); }
+    .dock-pill { display: flex; align-items: center; gap: 4px; padding: 8px 10px; border-radius: 999px; background: var(--dock-bg); border: 1px solid var(--dock-border); box-shadow: var(--dock-shadow); backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); }
+    .dock-btn { position: relative; width: 46px; height: 46px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--dock-fg); transition: color .15s, background .15s, transform .15s; }
+    .dock-btn svg { width: 22px; height: 22px; }
+    .dock-btn:hover { color: var(--dock-fg-hi); background: var(--dock-border); }
+    .dock-btn:active { transform: scale(.92); }
+    .dock-btn.active { color: var(--dock-accent); background: var(--dock-accent-bg); box-shadow: 0 0 0 1px var(--dock-accent-bg), 0 0 18px var(--dock-accent-bg); }
+    .dock-btn .dot { position: absolute; bottom: -5px; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--dock-accent); opacity: 0; transition: opacity .15s; }
+    .dock-btn.active .dot { opacity: 1; }
+    .dock-btn .count { position: absolute; top: 3px; right: 1px; min-width: 16px; padding: 1px 4px; border-radius: 8px; background: var(--dock-accent); color: #04281d; font-size: .62rem; font-weight: 700; line-height: 1.2; text-align: center; margin: 0; }
+    .dock-btn .count:empty { display: none; }
+    .dock-sep { width: 1px; height: 24px; margin: 0 4px; background: var(--dock-border); }
+    .dock-add { color: var(--dock-accent); }
+    #settings-menu { position: absolute; right: 0; bottom: calc(100% + 12px); min-width: 220px; padding: 6px; border-radius: 16px; background: var(--dock-bg); border: 1px solid var(--dock-border); box-shadow: var(--dock-shadow); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: flex; flex-direction: column; gap: 2px; }
+    #settings-menu[hidden] { display: none; }
+    .set-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 11px 12px; border-radius: 10px; font-size: .88rem; font-weight: 600; color: var(--dock-fg-hi); text-align: left; }
+    .set-item:hover { background: var(--dock-border); }
+    .set-row { cursor: default; }
+    .set-theme { width: 34px; height: 34px; border-radius: 50%; background: var(--dock-border); font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+    @media (max-width: 460px) { .dock-pill { padding: 6px 7px; gap: 1px; } .dock-btn { width: 40px; height: 40px; } .dock-btn svg { width: 20px; height: 20px; } .dock-sep { margin: 0 2px; } }
+
+    /* ---- Books ---- */
+    body[data-view="books"] #view-books { display: block; }
+    body[data-view="book"]  #view-book  { display: block; }
+    .books-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .books-head h2 { font-size: 1.3rem; }
+    .books-import { cursor: pointer; }
+    #books-status { margin-bottom: 14px; font-size: .88rem; color: #667085; }
+    #books-status.error { color: #c62828; }
+    .book-cover { aspect-ratio: 3/4; display: flex; align-items: flex-end; padding: 14px; color: #fff; font-weight: 700; line-height: 1.25; background: linear-gradient(160deg, hsl(var(--h),55%,45%), hsl(calc(var(--h) + 40),60%,28%)); }
+    .book-bar { height: 3px; background: rgba(128,128,128,.25); } .book-bar i { display: block; height: 100%; background: #16a34a; }
+    .books-empty { text-align: center; padding: 60px 16px; color: #667085; }
+    #reader { max-width: 720px; margin: 0 auto; --bfs: 1.15rem; }
+    .rd-bar { position: sticky; top: 0; z-index: 15; display: flex; align-items: center; gap: 8px; padding: 10px 0; margin-bottom: 10px; background: inherit; backdrop-filter: blur(8px); flex-wrap: wrap; }
+    .rd-bar a, .rd-bar button, .rd-bar select { padding: 7px 12px; border-radius: 8px; background: rgba(128,128,128,.16); color: inherit; font-size: .85rem; font-weight: 600; border: 0; }
+    .rd-bar select { flex: 1; min-width: 0; max-width: 360px; }
+    #reader h1 { font-size: 1.5rem; margin: 18px 0 22px; line-height: 1.3; }
+    #reader p { font-size: var(--bfs); line-height: 1.85; margin-bottom: 1em; }
+    #reader.list p { margin-bottom: .35em; line-height: 1.5; }
+    .bw { cursor: pointer; border-radius: 3px; }
+    .bw:hover { background: rgba(25,118,210,.18); }
+    .bw.saved { background: rgba(22,163,74,.2); }
+    .rd-nav { display: flex; justify-content: space-between; margin-top: 30px; }
+    .rd-nav button { padding: 10px 18px; border-radius: 10px; background: #1976d2; color: #fff; font-weight: 600; }
+    .rd-nav button:disabled { opacity: .35; }
+    #word-pop { position: fixed; z-index: 60; width: 260px; padding: 12px; border-radius: 12px; background: #fff; color: #1f2430; border: 1px solid #d0d5dd; box-shadow: 0 12px 32px rgba(0,0,0,.25); display: flex; flex-direction: column; gap: 8px; }
+    html[data-theme="dark"] #word-pop { background: #1f2430; color: #e6e9ef; border-color: #3a4358; }
+    #word-pop[hidden] { display: none; }
+    #word-pop input { padding: 8px 10px; border-radius: 8px; border: 1px solid #d0d5dd; background: transparent; color: inherit; }
+    #word-pop .row { display: flex; gap: 8px; } #word-pop .row button { flex: 1; padding: 8px; border-radius: 8px; font-weight: 600; background: rgba(128,128,128,.18); color: inherit; }
+    #word-pop .row button.primary { background: #16a34a; color: #fff; }
+
+    /* ---- Top Videos / Books switch ---- */
+    #mode-switch { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); z-index: 40; display: flex; gap: 4px; padding: 5px; border-radius: 999px; background: var(--dock-bg); border: 1px solid var(--dock-border); box-shadow: var(--dock-shadow); backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); transition: transform .28s ease, opacity .28s ease; }
+    #mode-switch.away { transform: translate(-50%, calc(-100% - 24px)); opacity: 0; pointer-events: none; }
+    .mode-btn { display: flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; font-size: .9rem; font-weight: 600; color: var(--dock-fg); transition: background .15s, color .15s; }
+    .mode-btn svg { width: 17px; height: 17px; }
+    .mode-btn:hover { color: var(--dock-fg-hi); }
+    .mode-btn.active { background: var(--dock-border); color: var(--dock-fg-hi); box-shadow: inset 0 0 0 1px var(--dock-border); }
+    .mode-btn.active svg { color: var(--dock-accent); }
+    body[data-view="watch"] #mode-switch, body[data-view="book"] #mode-switch { display: none; }
+    .page { padding-top: 80px; }
   </style>
 </head>
-<body data-view="videos">
+<body data-view="home">
 
-  <header id="app-header">
-    <span class="brand"><span class="brand-flag" id="brand-flag">🌐</span><span data-i18n="brand">Library</span></span>
-    <nav class="tabs">
-      <a class="tab" href="#/videos" data-tab="videos"><span data-i18n="tab.videos">Videos</span> <span class="count" id="tab-videos-count"></span></a>
-      <a class="tab" href="#/channels" data-tab="channels"><span data-i18n="tab.channels">Channels</span> <span class="count" id="tab-channels-count"></span></a>
-      <a class="tab" href="#/vocabulary" data-tab="vocabulary"><span data-i18n="tab.vocabulary">Vocabulary</span> <span class="count" id="tab-vocab-count"></span></a>
-    </nav>
-    <div class="hdr-actions">
-      <button id="open-lang" class="hdr-btn" title="Language profile">
-        <span data-i18n="lang.btn">🌐 Language</span>
-        <span class="lang-badge" id="lang-badge">FR</span>
-      </button>
-      <button class="theme-btn hdr-btn" data-i18n-title="theme.dark">🌙</button>
-      <button id="open-backup" class="hdr-btn" data-i18n-title="backup.open.title" data-i18n="backup.open">💾 Backup</button>
-      <button id="open-add" class="add-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-        <span data-i18n="add.btn">Add</span>
-      </button>
+  <div id="mode-switch" role="tablist" aria-label="Section">
+    <a class="mode-btn" id="mode-videos" href="#/home" role="tab"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="7 4 20 12 7 20 7 4"/></svg><span>Videos</span></a>
+    <a class="mode-btn" id="mode-books" href="#/books" role="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M9 8h6"/></svg><span>Books</span></a>
+  </div>
+  <nav id="dock" aria-label="Main">
+    <div class="dock-pill">
+      <a class="tab dock-btn" href="#/home" data-tab="home" aria-label="Home" data-i18n-title="tab.home" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><i class="dot"></i></a>
+      <a class="tab dock-btn" href="#/videos" data-tab="videos" aria-label="Videos" data-i18n-title="tab.videos" title="Videos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg><span class="count" id="tab-videos-count"></span><i class="dot"></i></a>
+      <a class="tab dock-btn" href="#/channels" data-tab="channels" aria-label="Channels" data-i18n-title="tab.channels" title="Channels"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 21h8M12 19v2"/></svg><span class="count" id="tab-channels-count"></span><i class="dot"></i></a>
+      <span hidden><span id="tab-vocab-count"></span><span id="tab-favorites-count"></span></span>
+      <span class="dock-sep"></span>
+      <button id="open-add" class="dock-btn dock-add" type="button" aria-label="Add" data-i18n-title="add.btn" title="Add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <button id="open-settings" class="dock-btn" type="button" aria-label="Settings" title="Settings" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </div>
-  </header>
+    <div id="settings-menu" role="menu" hidden>
+      <button id="open-lang" class="set-item" type="button" role="menuitem"><span data-i18n="lang.btn">🌐 Language</span><span class="lang-badge" id="lang-badge">FR</span></button>
+      <div class="set-item set-row" role="menuitem"><span data-i18n="theme.dark">Dark mode</span><button class="theme-btn set-theme" type="button">🌙</button></div>
+      <button id="open-backup" class="set-item" type="button" role="menuitem" data-i18n-title="backup.open.title"><span data-i18n="backup.open">💾 Backup</span></button>
+    </div>
+  </nav>
+
+  <div id="side-backdrop"></div>
+  <aside id="side-drawer" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="drawer-head">
+      <h2 id="drawer-title"></h2>
+      <div class="drawer-tools">
+        <button id="drawer-clear" class="tb-btn" type="button" hidden></button>
+        <button id="drawer-close" type="button" aria-label="Close">✕</button>
+      </div>
+    </div>
+    <div id="drawer-body"></div>
+  </aside>
+
+  <section id="view-home" class="view"><div class="page" id="home-content"></div></section>
+  <section id="view-favorites" class="view"><div class="page" id="favorites-content"></div></section>
+  <section id="view-history" class="view"><div class="page" id="history-content"></div></section>
 
   <section id="view-videos" class="view">
     <div class="page">
@@ -567,6 +780,9 @@
 
   <section id="view-channel" class="view"><div class="page" id="channel-content"></div></section>
   <section id="view-playlist" class="view"><div class="page" id="playlist-content"></div></section>
+
+  <section id="view-books" class="view"><div class="page" id="books-content"></div></section>
+  <section id="view-book" class="view"><div class="page" id="book-content"></div></section>
 
   <section id="view-vocabulary" class="view">
     <div class="page">
@@ -598,6 +814,7 @@
         <button id="back-btn" class="back-link" data-i18n="watch.back">← Back</button>
         <div class="topbar-right">
           <button class="theme-btn toggle-sidebar-btn" data-i18n-title="theme.dark">🌙</button>
+          <button id="watch-fav" class="toggle-sidebar-btn" type="button" title="Favorite">♡</button>
           <button id="sidebar-toggle" class="toggle-sidebar-btn" data-i18n-title="sidebar.hide" data-i18n="watch.subs.hide">Hide subtitles ▸</button>
         </div>
       </div>
@@ -964,6 +1181,54 @@
       "picker.meta": "{v} video(s) · {p} playlist(s)",
       "picker.meta.videos": "{n} video(s)",
       "picker.cancel": "Cancel",
+      "tab.home": "Home",
+      "tab.favorites": "Favorites",
+      "tab.history": "History",
+      "app.title.home": "Home · Video library",
+      "app.title.favorites": "Favorites · Video library",
+      "app.title.history": "History · Video library",
+      "home.welcome": "Welcome back",
+      "home.sub": "Pick up where you left off, or find something new in your {lang} library.",
+      "home.stat.words": "Words saved",
+      "home.stat.mastered": "Mastered",
+      "home.stat.watched": "Videos watched",
+      "home.stat.favorites": "Favorites",
+      "home.continue": "Continue learning",
+      "home.continue.label": "Continue",
+      "home.resume.at": "Resume at {time}",
+      "home.continue.empty": "Nothing in progress yet. Start a video below and it will show up here.",
+      "home.suggest": "Suggested for you",
+      "home.suggest.empty": "You've watched everything in your library. Add more channels or playlists to get new suggestions.",
+      "home.reason.next": "Next in “{playlist}”",
+      "home.reason.channel": "From {name}, a channel you watch",
+      "home.reason.subs": "Subtitles ready",
+      "home.reason.new": "New in your library",
+      "home.vocab": "Vocabulary",
+      "home.vocab.open": "Open vocabulary →",
+      "home.vocab.review": "Words to review",
+      "home.vocab.empty": "No saved words yet. Open a video and click a word in the subtitles to save it.",
+      "home.vocab.total": "words saved",
+      "home.history": "Recently watched",
+      "home.favorites": "Favorites",
+      "home.seeall": "See all →",
+      "home.history.empty": "Videos you watch will appear here.",
+      "home.favorites.empty": "Tap the ♡ on a video to keep it here.",
+      "home.empty.title": "Your library is empty",
+      "home.empty.desc": "Add a video, a playlist or a channel to get started.",
+      "home.empty.btn": "Add a source",
+      "fav.add": "Add to favorites",
+      "fav.remove": "Remove from favorites",
+      "fav.empty.title": "No favorites yet",
+      "fav.empty.desc": "Tap the ♡ on any video to find it here quickly.",
+      "hist.title": "History",
+      "hist.remove": "Remove from history",
+      "hist.clear": "Clear history",
+      "hist.clear.confirm": "Clear the whole watch history for this language? Your videos and vocabulary are not affected.",
+      "hist.empty.title": "No history yet",
+      "hist.empty.desc": "Videos you watch will be listed here.",
+      "hist.watched": "Watched {when}",
+      "hist.finished": "Finished",
+      "time.justnow": "just now",
     },
 
     /* ---------------- FRANÇAIS ---------------- */
@@ -1180,6 +1445,54 @@
       "picker.meta": "{v} vidéo(s) · {p} playlist(s)",
       "picker.meta.videos": "{n} vidéo(s)",
       "picker.cancel": "Annuler",
+      "tab.home": "Accueil",
+      "tab.favorites": "Favoris",
+      "tab.history": "Historique",
+      "app.title.home": "Accueil · Bibliothèque vidéo",
+      "app.title.favorites": "Favoris · Bibliothèque vidéo",
+      "app.title.history": "Historique · Bibliothèque vidéo",
+      "home.welcome": "Bon retour",
+      "home.sub": "Reprenez où vous vous étiez arrêté, ou découvrez du nouveau dans votre bibliothèque ({lang}).",
+      "home.stat.words": "Mots enregistrés",
+      "home.stat.mastered": "Maîtrisés",
+      "home.stat.watched": "Vidéos vues",
+      "home.stat.favorites": "Favoris",
+      "home.continue": "Continuer à apprendre",
+      "home.continue.label": "Continuer",
+      "home.resume.at": "Reprendre à {time}",
+      "home.continue.empty": "Rien en cours pour l'instant. Lancez une vidéo ci-dessous, elle apparaîtra ici.",
+      "home.suggest": "Suggestions pour vous",
+      "home.suggest.empty": "Vous avez tout regardé dans votre bibliothèque. Ajoutez des chaînes ou des playlists pour de nouvelles suggestions.",
+      "home.reason.next": "Suite de « {playlist} »",
+      "home.reason.channel": "De {name}, une chaîne que vous regardez",
+      "home.reason.subs": "Sous-titres prêts",
+      "home.reason.new": "Nouveau dans votre bibliothèque",
+      "home.vocab": "Vocabulaire",
+      "home.vocab.open": "Ouvrir le vocabulaire →",
+      "home.vocab.review": "Mots à réviser",
+      "home.vocab.empty": "Aucun mot enregistré. Ouvrez une vidéo et cliquez sur un mot des sous-titres pour l'enregistrer.",
+      "home.vocab.total": "mots enregistrés",
+      "home.history": "Vus récemment",
+      "home.favorites": "Favoris",
+      "home.seeall": "Tout voir →",
+      "home.history.empty": "Les vidéos que vous regardez apparaîtront ici.",
+      "home.favorites.empty": "Touchez le ♡ d'une vidéo pour la garder ici.",
+      "home.empty.title": "Votre bibliothèque est vide",
+      "home.empty.desc": "Ajoutez une vidéo, une playlist ou une chaîne pour commencer.",
+      "home.empty.btn": "Ajouter une source",
+      "fav.add": "Ajouter aux favoris",
+      "fav.remove": "Retirer des favoris",
+      "fav.empty.title": "Aucun favori",
+      "fav.empty.desc": "Touchez le ♡ d'une vidéo pour la retrouver rapidement ici.",
+      "hist.title": "Historique",
+      "hist.remove": "Retirer de l'historique",
+      "hist.clear": "Effacer l'historique",
+      "hist.clear.confirm": "Effacer tout l'historique de visionnage de cette langue ? Vos vidéos et votre vocabulaire ne sont pas affectés.",
+      "hist.empty.title": "Aucun historique",
+      "hist.empty.desc": "Les vidéos que vous regardez seront listées ici.",
+      "hist.watched": "Vu {when}",
+      "hist.finished": "Terminé",
+      "time.justnow": "à l'instant",
     },
 
     /* ---------------- 日本語 ---------------- */
@@ -1396,6 +1709,54 @@
       "picker.meta": "動画 {v} 件 · プレイリスト {p} 件",
       "picker.meta.videos": "動画 {n} 件",
       "picker.cancel": "キャンセル",
+      "tab.home": "ホーム",
+      "tab.favorites": "お気に入り",
+      "tab.history": "履歴",
+      "app.title.home": "ホーム · 動画ライブラリ",
+      "app.title.favorites": "お気に入り · 動画ライブラリ",
+      "app.title.history": "履歴 · 動画ライブラリ",
+      "home.welcome": "おかえりなさい",
+      "home.sub": "続きから再開するか、{lang}のライブラリで新しい動画を見つけましょう。",
+      "home.stat.words": "保存した単語",
+      "home.stat.mastered": "習得済み",
+      "home.stat.watched": "視聴した動画",
+      "home.stat.favorites": "お気に入り",
+      "home.continue": "学習を続ける",
+      "home.continue.label": "続きから",
+      "home.resume.at": "{time} から再開",
+      "home.continue.empty": "進行中の動画はまだありません。下の動画を再生すると、ここに表示されます。",
+      "home.suggest": "おすすめ",
+      "home.suggest.empty": "ライブラリの動画はすべて視聴済みです。チャンネルやプレイリストを追加すると新しいおすすめが表示されます。",
+      "home.reason.next": "「{playlist}」の次の動画",
+      "home.reason.channel": "よく見ているチャンネル「{name}」より",
+      "home.reason.subs": "字幕あり",
+      "home.reason.new": "ライブラリの新着",
+      "home.vocab": "単語帳",
+      "home.vocab.open": "単語帳を開く →",
+      "home.vocab.review": "復習する単語",
+      "home.vocab.empty": "保存した単語はまだありません。動画を開き、字幕の単語をクリックして保存しましょう。",
+      "home.vocab.total": "語を保存",
+      "home.history": "最近見た動画",
+      "home.favorites": "お気に入り",
+      "home.seeall": "すべて見る →",
+      "home.history.empty": "視聴した動画がここに表示されます。",
+      "home.favorites.empty": "動画の ♡ をタップするとここに保存されます。",
+      "home.empty.title": "ライブラリは空です",
+      "home.empty.desc": "動画、プレイリスト、チャンネルを追加して始めましょう。",
+      "home.empty.btn": "ソースを追加",
+      "fav.add": "お気に入りに追加",
+      "fav.remove": "お気に入りから削除",
+      "fav.empty.title": "お気に入りはまだありません",
+      "fav.empty.desc": "動画の ♡ をタップすると、ここからすぐに見つけられます。",
+      "hist.title": "履歴",
+      "hist.remove": "履歴から削除",
+      "hist.clear": "履歴を消去",
+      "hist.clear.confirm": "この言語の視聴履歴をすべて消去しますか？動画と単語帳には影響しません。",
+      "hist.empty.title": "履歴はまだありません",
+      "hist.empty.desc": "視聴した動画がここに一覧表示されます。",
+      "hist.watched": "{when}に視聴",
+      "hist.finished": "視聴済み",
+      "time.justnow": "たった今",
     },
   };
 
@@ -1543,7 +1904,7 @@
   /* ================================================================
      DB — per language
      ================================================================ */
-  function emptyDB() { return { channels: [], playlists: [], videos: [], vocabulary: [] }; }
+  function emptyDB() { return { channels: [], playlists: [], videos: [], vocabulary: [], favorites: [], history: [] }; }
 
   function getDB(langCode) {
     const lang = langCode || profile.learningLang;
@@ -1557,6 +1918,8 @@
           playlists:  Array.isArray(d.playlists)  ? d.playlists  : [],
           videos:     Array.isArray(d.videos)     ? d.videos     : [],
           vocabulary: Array.isArray(d.vocabulary) ? d.vocabulary : [],
+          favorites:  Array.isArray(d.favorites)  ? d.favorites  : [],
+          history:    Array.isArray(d.history)    ? d.history    : [],
         };
       }
     } catch {}
@@ -1616,6 +1979,8 @@
   function removeVideoDB(id) {
     const db = getDB();
     db.videos = db.videos.filter(v => v.id !== id);
+    db.favorites = db.favorites.filter(x => x !== id);
+    db.history = db.history.filter(h => h.id !== id);
     for (const p of db.playlists) p.videoIds = p.videoIds.filter(x => x !== id);
     saveDB(db);
     clearSubCache(id);
@@ -1630,7 +1995,10 @@
     const db = getDB();
     db.channels  = db.channels.filter(c => c.id !== id);
     db.playlists = db.playlists.filter(p => p.channelId !== id);
+    const goneIds = new Set(db.videos.filter(v => v.channelId === id).map(v => v.id));
     db.videos    = db.videos.filter(v => v.channelId !== id);
+    db.favorites = db.favorites.filter(x => !goneIds.has(x));
+    db.history   = db.history.filter(h => !goneIds.has(h.id));
     saveDB(db);
   }
 
@@ -1979,6 +2347,8 @@
     document.getElementById("tab-videos-count").textContent = db.videos.length || "";
     document.getElementById("tab-channels-count").textContent = db.channels.length || "";
     document.getElementById("tab-vocab-count").textContent = db.vocabulary.length || "";
+    const favCount = document.getElementById("tab-favorites-count");
+    if (favCount) favCount.textContent = db.favorites.length || "";
   }
   function setActiveTab(name) {
     document.querySelectorAll(".tab").forEach(el => el.classList.toggle("active", el.dataset.tab === name));
@@ -2093,6 +2463,7 @@
   }
   function onPlayerReady() {
     playerReady = true;
+    if (document.body.dataset.view !== "watch") { try { player.pauseVideo(); } catch {} }
     const iframe = document.querySelector("#player iframe");
     if (iframe) iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
     if (pendingResume !== null && player && typeof player.seekTo === "function") {
@@ -2102,6 +2473,10 @@
     startSyncLoop();
   }
   function onPlayerStateChange(e) {
+    if (e.data === YT.PlayerState.PLAYING && document.body.dataset.view !== "watch") {
+      try { player.pauseVideo(); } catch {}
+      return;
+    }
     if (e.data === YT.PlayerState.PLAYING) {
       if (!syncTimer) startSyncLoop();
       if (pendingResume !== null && player && typeof player.seekTo === "function") {
@@ -2146,11 +2521,16 @@
     del.innerHTML = TRASH_SVG;
     del.addEventListener("click", e => { e.stopPropagation(); onDelete(); });
     card.append(img, body, del);
+    card.classList.add("has-fav");
+    card.appendChild(makeFavButton(v.id));
 
-    const lw = getLastWatched();
-    if (lw && lw.videoId === v.id && lw.position > 3) {
-      const dur = v.duration || 0;
-      const pct = dur > 0 ? Math.min(100, (lw.position / dur) * 100) : 0;
+    const lw0 = getLastWatched();
+    const hst = cardCtx().hist.get(v.id);
+    const prog = hst && hst.position > 3 ? { position: hst.position, dur: hst.duration || v.duration || 0 }
+      : (lw0 && lw0.videoId === v.id && lw0.position > 3 ? { position: lw0.position, dur: v.duration || 0 } : null);
+    if (prog) {
+      const dur = prog.dur;
+      const pct = dur > 0 ? Math.min(100, (prog.position / dur) * 100) : 0;
       if (pct > 1) {
         const wrap = document.createElement("div"); wrap.className = "card-progress";
         const fill = document.createElement("div"); fill.className = "card-progress-fill"; fill.style.width = pct.toFixed(1) + "%";
@@ -2664,6 +3044,7 @@
   }
   function tick() {
     if (!playerReady || !player || typeof player.getCurrentTime !== "function") return;
+    if (document.body.dataset.view !== "watch") return;
     const tSec = player.getCurrentTime();
     timeEl.textContent = fmtTime(tSec);
 
@@ -2672,6 +3053,7 @@
       lastPositionSave = now;
       const entry = getDB().videos.find(v => v.id === targetVideoId);
       saveLastWatched(targetVideoId, tSec, entry?.title || "");
+      if (tSec > 1) recordHistory(targetVideoId, { position: tSec, duration: getVideoDuration() });
     }
 
     if (!subtitleLines.length || subtitleVideoId !== targetVideoId) { lineEl.textContent = "—"; return; }
@@ -3040,14 +3422,35 @@
      ================================================================ */
   function route() {
     let hash = location.hash || "#/";
-    if (hash === "#" || hash === "#/") hash = "#/channels";
+    if (hash === "#" || hash === "#/") hash = "#/home";
     updateTabCounts();
+    closeDrawer();
+    if (!hash.startsWith("#/watch/")) stopPlaybackOnLeave();
     if (hash.startsWith("#/watch/")) { const m = hash.match(/^#\/watch\/([A-Za-z0-9_-]+)/); if (m) return showWatch(m[1]); }
     if (hash.startsWith("#/channel/")) { const id = decodeURIComponent(hash.slice("#/channel/".length)); return showChannel(id); }
     if (hash.startsWith("#/playlist/")) { const id = decodeURIComponent(hash.slice("#/playlist/".length)); return showPlaylist(id); }
+    if (hash === "#/books") { document.body.dataset.view = "books"; setActiveTab("books"); document.title = "Books"; renderBooks(); return; }
+    if (hash.startsWith("#/book/")) { showBook(decodeURIComponent(hash.slice(7))); return; }
+    if (hash === "#/home")      { document.body.dataset.view = "home";      setActiveTab("home");      document.title = t("app.title.home");      renderHome();      return; }
+    if (hash === "#/favorites") { document.body.dataset.view = "favorites"; setActiveTab("favorites"); document.title = t("app.title.favorites"); renderFavorites(); return; }
+    if (hash === "#/history")   { document.body.dataset.view = "history";   setActiveTab("history");   document.title = t("app.title.history");   renderHistory();   return; }
     if (hash === "#/channels") { document.body.dataset.view = "channels"; setActiveTab("channels"); document.title = t("app.title.channels"); renderChannels(); return; }
     if (hash === "#/vocabulary") { document.body.dataset.view = "vocabulary"; setActiveTab("vocabulary"); document.title = t("app.title.vocabulary"); renderVocabulary(); return; }
     document.body.dataset.view = "videos"; setActiveTab("videos"); document.title = t("app.title"); renderVideos();
+  }
+  /* Leaving the watch page: save the position and pause, otherwise the
+     YouTube iframe keeps playing audio in the background. */
+  function stopPlaybackOnLeave() {
+    if (!player || typeof player.pauseVideo !== "function") return;
+    try {
+      if (playerReady && targetVideoId && document.body.dataset.view === "watch" && typeof player.getCurrentTime === "function") {
+        const tSec = player.getCurrentTime();
+        const entry = getDB().videos.find(v => v.id === targetVideoId);
+        saveLastWatched(targetVideoId, tSec, entry?.title || "");
+        if (tSec > 1) recordHistory(targetVideoId, { position: tSec, duration: getVideoDuration() });
+      }
+      player.pauseVideo();
+    } catch {}
   }
   function showChannel(id) {
     document.body.dataset.view = "channel"; setActiveTab("channels");
@@ -3071,6 +3474,8 @@
 
     const previousTarget = targetVideoId;
     targetVideoId = videoId;
+    if (previousTarget !== videoId) recordHistory(videoId, { opened: true });
+    syncWatchFav();
 
     if (previousTarget !== videoId) {
       loadGeneration++;
@@ -3078,7 +3483,9 @@
       renderStageForIndex(-1);
 
       const lw = getLastWatched();
-      pendingResume = (lw && lw.videoId === videoId && lw.position > 3) ? lw.position : null;
+      const hrec = db.history.find(x => x.id === videoId);
+      const hOk = hrec && hrec.position > 3 && !(hrec.duration > 0 && hrec.position / hrec.duration >= 0.95);
+      pendingResume = (lw && lw.videoId === videoId && lw.position > 3) ? lw.position : (hOk ? hrec.position : null);
 
       ensurePlayerFor(videoId);
       loadSubtitles(videoId);
@@ -3088,6 +3495,218 @@
       if (!subtitleLines.length) renderManualInput();
     }
   }
+function bkGroupLines(items) {
+  items.sort((a, b) => b.transform[5] - a.transform[5] || a.transform[4] - b.transform[4]);
+  const rows = [];
+  for (const it of items) {
+    const y = it.transform[5], last = rows[rows.length - 1];
+    if (last && Math.abs(last.y - y) < Math.max(2.5, (it.height || 10) * 0.35)) last.items.push(it);
+    else rows.push({ y, items: [it] });
+  }
+  return rows.map(r => {
+    r.items.sort((a, b) => a.transform[4] - b.transform[4]);
+    let s = "", prevEnd = null;
+    for (const it of r.items) {
+      const x = it.transform[4];
+      if (prevEnd !== null && x - prevEnd > (it.height || 10) * 0.12 && !s.endsWith(" ") && !it.str.startsWith(" ")) s += " ";
+      s += it.str; prevEnd = x + it.width;
+    }
+    return { y: r.y, x: r.items[0].transform[4], text: s.replace(/\s+/g, " ").trim() };
+  }).filter(l => l.text);
+}
+/* pages: [{ width, height, items }] -> sections [{ title, list, paras }] */
+function bkBuildSections(pages) {
+  const sections = [];
+  let cur = null, para = "", colKey = "";
+  const flush = () => { if (cur && para.trim()) cur.paras.push(para.trim()); para = ""; };
+  const open = (title, kind) => { flush(); cur = { title, kind, list: kind === "glossary" || kind === "notes", paras: [], collect: false }; sections.push(cur); return cur; };
+  pages.forEach((pg, pi) => {
+    const spread = pg.width > pg.height * 1.15, mid = pg.width / 2;
+    const cols = spread ? [pg.items.filter(i => i.transform[4] < mid), pg.items.filter(i => i.transform[4] >= mid)] : [pg.items];
+    cols.forEach((items, ci) => {
+      let lines = bkGroupLines(items.filter(i => i.str && i.str.trim()));
+      lines = lines.filter(l => !(/^\d{1,3}$/.test(l.text) && (l.y < pg.height * 0.12 || l.y > pg.height * 0.9)));
+      if (!lines.length) return;
+      const body = lines.filter(l => l.text.length > 25);
+      const margin = Math.min(...(body.length ? body : lines).map(l => l.x));
+      colKey = pi + "-" + ci;
+      if (cur) cur.collect = false;
+      for (const l of lines) {
+        const t = l.text;
+        if (/^Chapter\s+([IVXLC]+|\d+)$/i.test(t)) { open(t, "chapter").collect = true; continue; }
+        if (/^(Glossary|Notes|Contents|Index)$/i.test(t)) { open(t, t.toLowerCase()); continue; }
+        if (!cur) open("Front matter", "front");
+        if (cur.collect) { cur.title += (cur.title.includes("—") ? " " : " — ") + t.replace(/^[‘'“"]+|[’'”"]+$/g, ""); continue; }
+        if (cur.list || l.x - margin > 6) { flush(); para = t; }
+        else if (!para) para = t;
+        else para += para.endsWith("-") ? t : " " + t;
+      }
+      if (cur.list) flush();
+    });
+  });
+  flush();
+  let out = sections.filter(s => s.paras.length && !["front", "contents", "index"].includes(s.kind));
+  if (!out.some(s => s.kind === "chapter")) {
+    const all = out.flatMap(s => s.paras); out = [];
+    for (let i = 0; i < all.length; i += 40) out.push({ title: "Part " + (out.length + 1), kind: "part", list: false, paras: all.slice(i, i + 40) });
+  }
+  return out.map(s => ({ title: s.kind === "notes" ? "Notes" : s.title, list: s.list, paras: s.paras }));
+}
+
+  /* ================================================================
+     BOOKS (PDF import -> reflowable reader, stored in IndexedDB)
+     ================================================================ */
+  function bkOpen() { return new Promise((res, rej) => { const r = indexedDB.open("yt-books:v1", 1); r.onupgradeneeded = () => r.result.createObjectStore("books", { keyPath: "id" }); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+  async function bkTx(mode, fn) { const db = await bkOpen(); return new Promise((res, rej) => { const tx = db.transaction("books", mode); const rq = fn(tx.objectStore("books")); tx.oncomplete = () => res(rq && rq.result); tx.onerror = () => rej(tx.error); }); }
+  const bkAll = () => bkTx("readonly", s => s.getAll());
+  const bkGet = id => bkTx("readonly", s => s.get(id));
+  const bkPut = b => bkTx("readwrite", s => s.put(b));
+  const bkDel = id => bkTx("readwrite", s => s.delete(id));
+  const bkProg = id => { try { return JSON.parse(localStorage.getItem("yt-book-prog:" + id)) || { sec: 0, pos: 0 }; } catch { return { sec: 0, pos: 0 }; } };
+  const bkSaveProg = (id, p) => { try { localStorage.setItem("yt-book-prog:" + id, JSON.stringify(p)); } catch {} };
+
+  let pdfjsPromise = null;
+  function loadPdfJs() {
+    if (!pdfjsPromise) pdfjsPromise = (async () => {
+      const base = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
+      await new Promise((res, rej) => { const sc = document.createElement("script"); sc.src = base + "pdf.min.js"; sc.onload = res; sc.onerror = () => rej(new Error("Could not load PDF.js (check your connection)")); document.head.appendChild(sc); });
+      const w = await (await fetch(base + "pdf.worker.min.js")).text();
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([w], { type: "text/javascript" }));
+      return window.pdfjsLib;
+    })().catch(e => { pdfjsPromise = null; throw e; });
+    return pdfjsPromise;
+  }
+  async function importBookPdf(file, onProgress) {
+    const lib = await loadPdfJs();
+    const pdf = await lib.getDocument({ data: await file.arrayBuffer() }).promise;
+    const pages = [];
+    for (let p = 1; p <= pdf.numPages; p++) {
+      onProgress(p, pdf.numPages);
+      const pg = await pdf.getPage(p), vp = pg.getViewport({ scale: 1 }), c = await pg.getTextContent();
+      pages.push({ width: vp.width, height: vp.height, items: c.items });
+    }
+    const sections = bkBuildSections(pages);
+    if (!sections.length) throw new Error("No selectable text found. This looks like a scanned PDF (OCR needed).");
+    const title = file.name.replace(/\.pdf$/i, "").replace(/^\d+[_\s-]*/, "").replace(/[_]+/g, " ").replace(/\s*-\s*Unknown$/i, "").replace(/(\S) s\b/g, "$1’s").replace(/\s+/g, " ").trim() || "Untitled";
+    const book = { id: "b_" + Date.now().toString(36), title, addedAt: Date.now(), pages: pdf.numPages, sections };
+    await bkPut(book);
+    return book;
+  }
+
+  let staticIdx = null;
+  async function staticBooks() {
+    if (staticIdx) return staticIdx;
+    try { const r = await fetch("books/index.json", { cache: "no-cache" }); staticIdx = r.ok ? (await r.json()).map(b => ({ ...b, static: true })) : []; } catch { staticIdx = []; }
+    return staticIdx;
+  }
+  async function renderBooks() {
+    const el = document.getElementById("books-content");
+    let books = [];
+    try { books = (await bkAll()).sort((a, b) => b.addedAt - a.addedAt); } catch {}
+    books = [...(await staticBooks()), ...books];
+    el.innerHTML = `<div class="books-head"><h2>Books</h2><label class="add-btn books-import">＋ Import PDF<input type="file" accept="application/pdf" hidden></label></div><div id="books-status"></div>` +
+      (books.length ? `<div class="grid">${books.map(b => {
+        const pr = bkProg(b.id), pct = Math.min(100, Math.round(((pr.sec + pr.pos) / (b.count || b.sections.length)) * 100));
+        const hue = [...b.title].reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+        return `<a class="card" href="#/book/${b.id}"><div class="book-cover" style="--h:${hue}">${escapeHtml(b.title)}</div><div class="book-bar"><i style="width:${pct}%"></i></div><div class="card-body"><div class="card-title">${escapeHtml(b.title)}</div><div class="card-author">${b.count || b.sections.length} sections · ${pct}%</div></div>${b.static ? "" : `<button class="card-delete" data-del="${b.id}" title="Delete">✕</button>`}</a>`;
+      }).join("")}</div>` : `<div class="books-empty">No books yet. Import a text-based PDF to start reading.</div>`);
+    const status = el.querySelector("#books-status");
+    el.querySelector("input[type=file]").addEventListener("change", async e => {
+      const f = e.target.files[0]; if (!f) return;
+      status.className = ""; status.textContent = "Reading PDF…";
+      try { const b = await importBookPdf(f, (p, n) => { status.textContent = `Reading page ${p} / ${n}…`; }); location.hash = "#/book/" + b.id; }
+      catch (err) { status.className = "error"; status.textContent = "Import failed: " + (err.message || err); }
+    });
+    el.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", async e => {
+      e.preventDefault(); e.stopPropagation();
+      if (confirm("Delete this book?")) { await bkDel(b.dataset.del); try { localStorage.removeItem("yt-book-prog:" + b.dataset.del); } catch {} renderBooks(); }
+    }));
+  }
+
+  /* ---- reader ---- */
+  let rdBook = null, rdSec = 0;
+  const WORD_RE = /[\p{L}\p{M}]+(?:['’-][\p{L}\p{M}]+)*/gu;
+  function savedWords() { const m = new Map(); try { getDB().vocabulary.forEach(v => { if (!/\s/.test(v.text)) m.set(v.text.toLowerCase(), v); }); } catch {} return m; }
+  function wrapWords(str, saved) {
+    let out = "", last = 0;
+    for (const m of str.matchAll(WORD_RE)) {
+      out += escapeHtml(str.slice(last, m.index));
+      out += `<span class="bw${saved.has(m[0].toLowerCase()) ? " saved" : ""}">${escapeHtml(m[0])}</span>`;
+      last = m.index + m[0].length;
+    }
+    return out + escapeHtml(str.slice(last));
+  }
+  async function showBook(id) {
+    document.body.dataset.view = "book"; setActiveTab("books");
+    let b = null;
+    try {
+      if (id.startsWith("s_")) { const e = (await staticBooks()).find(x => x.id === id); if (e) b = await (await fetch("books/" + e.file)).json(); }
+      else b = await bkGet(id);
+    } catch {}
+    if (!b) { location.hash = "#/books"; return; }
+    rdBook = b; document.title = b.title;
+    const pr = bkProg(id);
+    renderSection(Math.min(pr.sec, b.sections.length - 1), pr.pos);
+  }
+  function renderSection(i, pos) {
+    rdSec = i; const b = rdBook, sec = b.sections[i], saved = savedWords();
+    const el = document.getElementById("book-content");
+    let fs = 1.15; try { fs = parseFloat(localStorage.getItem("yt-book-fs")) || 1.15; } catch {}
+    el.innerHTML = `<div id="reader" class="${sec.list ? "list" : ""}" style="--bfs:${fs}rem">
+      <div class="rd-bar"><a href="#/books">← Books</a>
+        <select id="rd-sel">${b.sections.map((s, k) => `<option value="${k}"${k === i ? " selected" : ""}>${escapeHtml(s.title)}</option>`).join("")}</select>
+        <button id="rd-minus" title="Smaller text">A−</button><button id="rd-plus" title="Larger text">A+</button></div>
+      <h1>${escapeHtml(sec.title)}</h1>${sec.paras.map(p => `<p>${wrapWords(p, saved)}</p>`).join("")}
+      <div class="rd-nav"><button id="rd-prev"${i === 0 ? " disabled" : ""}>← Previous</button><button id="rd-next"${i === b.sections.length - 1 ? " disabled" : ""}>Next →</button></div></div>`;
+    const go = k => { bkSaveProg(b.id, { sec: k, pos: 0 }); renderSection(k, 0); };
+    el.querySelector("#rd-sel").onchange = e => go(+e.target.value);
+    el.querySelector("#rd-prev").onclick = () => go(i - 1);
+    el.querySelector("#rd-next").onclick = () => go(i + 1);
+    const setFs = d => { const r = el.querySelector("#reader"); const v = Math.min(2, Math.max(.85, (parseFloat(r.style.getPropertyValue("--bfs")) || 1.15) + d)); r.style.setProperty("--bfs", v + "rem"); try { localStorage.setItem("yt-book-fs", v); } catch {} };
+    el.querySelector("#rd-minus").onclick = () => setFs(-.1); el.querySelector("#rd-plus").onclick = () => setFs(.1);
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => { const max = document.documentElement.scrollHeight - innerHeight; if (pos > 0 && max > 0) window.scrollTo(0, pos * max); });
+  }
+  let rdTimer = null;
+  window.addEventListener("scroll", () => {
+    if (document.body.dataset.view !== "book" || !rdBook) return;
+    clearTimeout(rdTimer);
+    rdTimer = setTimeout(() => { const max = document.documentElement.scrollHeight - innerHeight; bkSaveProg(rdBook.id, { sec: rdSec, pos: max > 0 ? Math.min(1, scrollY / max) : 0 }); }, 500);
+  }, { passive: true });
+
+  /* ---- tap a word to save it to Vocabulary ---- */
+  const pop = document.createElement("div"); pop.id = "word-pop"; pop.hidden = true; document.body.appendChild(pop);
+  const closePop = () => { pop.hidden = true; };
+  document.getElementById("book-content").addEventListener("click", e => {
+    const w = e.target.closest(".bw"); if (!w) return;
+    e.stopPropagation();
+    const word = w.textContent, existing = savedWords().get(word.toLowerCase());
+    const para = w.closest("p").textContent;
+    const sentence = (para.split(/(?<=[.!?”"])\s+/).find(x => x.includes(word)) || para).trim();
+    pop.innerHTML = `<strong>${escapeHtml(word)}</strong>` + (existing
+      ? `<div>${escapeHtml(existing.translation || "Already saved")}</div><div class="row"><button class="x">Close</button></div>`
+      : `<input placeholder="Translation" autocomplete="off" /><div class="row"><button class="x">Cancel</button><button class="primary s">Save</button></div>`);
+    const r = w.getBoundingClientRect();
+    pop.style.left = Math.max(8, Math.min(innerWidth - 268, r.left)) + "px";
+    pop.style.top = (r.bottom + 190 > innerHeight ? Math.max(8, r.top - 150) : r.bottom + 8) + "px";
+    pop.hidden = false;
+    pop.querySelector(".x").onclick = closePop;
+    const inp = pop.querySelector("input");
+    if (inp) {
+      inp.focus();
+      const save = () => {
+        addVocabEntry({ text: word, translation: inp.value.trim(), note: sentence, videoId: null, videoTitle: "📖 " + rdBook.title, timestamp: 0 });
+        document.querySelectorAll("#reader .bw").forEach(x => { if (x.textContent.toLowerCase() === word.toLowerCase()) x.classList.add("saved"); });
+        updateTabCounts(); closePop();
+      };
+      pop.querySelector(".s").onclick = save;
+      inp.onkeydown = ev => { if (ev.key === "Enter") save(); };
+    }
+  });
+  document.addEventListener("click", e => { if (!pop.hidden && !e.target.closest("#word-pop")) closePop(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closePop(); });
+  window.addEventListener("hashchange", closePop);
+
   window.addEventListener("hashchange", route);
 
   /* ================================================================
@@ -3444,6 +4063,9 @@
         .map(p => ({ ...p, title: p.title || p.id, channelId: p.channelId || null, videoIds: arr(p.videoIds).filter(x => typeof x === "string") })),
       videos: arr(src.videos).filter(v => v && typeof v.id === "string" && v.id)
         .map(v => ({ ...v, title: v.title || v.id, author: v.author || "", channelId: v.channelId || null, playlistIds: arr(v.playlistIds).filter(x => typeof x === "string") })),
+      favorites: arr(src.favorites).filter(x => typeof x === "string"),
+      history: arr(src.history).filter(h => h && typeof h.id === "string" && h.id)
+        .map(h => ({ id: h.id, at: Number(h.at) || 0, position: Number(h.position) || 0, duration: Number(h.duration) || 0, count: Number(h.count) || 1 })),
       vocabulary: arr(src.vocabulary).filter(e => e && typeof e.text === "string" && e.text.trim())
         .map(e => ({
           id: e.id || ("v_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)),
@@ -3567,6 +4189,12 @@
           x.id === e.id ||
           (x.text.toLowerCase() === e.text.toLowerCase() && x.videoId === e.videoId && Math.abs((x.timestamp || 0) - e.timestamp) < 2));
         if (!dup) { current.vocabulary.push(e); counts.w++; }
+      }
+      for (const id of incoming.favorites || []) if (!current.favorites.includes(id)) current.favorites.push(id);
+      for (const h of incoming.history || []) {
+        const ex = current.history.find(x => x.id === h.id);
+        if (!ex) current.history.push(h);
+        else if ((h.at || 0) > (ex.at || 0)) Object.assign(ex, h);
       }
       saveDB(current, code);
       totalV += counts.v; totalC += counts.c; totalP += counts.p; totalW += counts.w;
@@ -3776,6 +4404,378 @@
     if (v && v !== "watch" && !document.querySelector("dialog[open]")) route();
   }
 
+
+  /* ================================================================
+     FAVORITES & HISTORY  (stored inside each language's library)
+     ================================================================ */
+  const HISTORY_MAX = 200;
+  let _cardCtx = null, _cardCtxAt = 0;
+  function cardCtx() {
+    const now = Date.now();
+    if (!_cardCtx || now - _cardCtxAt > 300) {
+      const db = getDB();
+      _cardCtx = { favs: new Set(db.favorites), hist: new Map(db.history.map(h => [h.id, h])) };
+      _cardCtxAt = now;
+    }
+    return _cardCtx;
+  }
+  function invalidateCardCtx() { _cardCtx = null; }
+
+  function recordHistory(videoId, { position, duration, opened } = {}) {
+    if (!videoId) return;
+    const db = getDB();
+    let h = db.history.find(x => x.id === videoId);
+    if (!h) { h = { id: videoId, at: Date.now(), position: 0, duration: 0, count: 0 }; db.history.push(h); }
+    h.at = Date.now();
+    if (opened) h.count = (h.count || 0) + 1;
+    if (position != null && isFinite(position)) h.position = Math.floor(position);
+    if (duration && isFinite(duration) && duration > 1) h.duration = Math.floor(duration);
+    if (db.history.length > HISTORY_MAX) { db.history.sort((a, b) => b.at - a.at); db.history.length = HISTORY_MAX; }
+    saveDB(db); invalidateCardCtx();
+  }
+  function isFavorite(id) { return cardCtx().favs.has(id); }
+  function toggleFavorite(id) {
+    const db = getDB();
+    const i = db.favorites.indexOf(id);
+    if (i >= 0) db.favorites.splice(i, 1); else db.favorites.unshift(id);
+    saveDB(db); invalidateCardCtx(); updateTabCounts(); syncWatchFav();
+    return i < 0;
+  }
+  function refreshFavViews() {
+    const v = document.body.dataset.view;
+    if (v === "favorites") renderFavorites(); else if (v === "home") renderHome(); else if (v === "history") renderHistory();
+    if (drawerKind) renderDrawer();
+  }
+  function makeFavButton(id) {
+    const b = document.createElement("button"); b.type = "button";
+    const paint = (on) => { b.className = "card-fav" + (on ? " on" : ""); b.textContent = on ? "♥" : "♡"; b.title = t(on ? "fav.remove" : "fav.add"); };
+    paint(isFavorite(id));
+    b.addEventListener("click", (e) => { e.stopPropagation(); paint(toggleFavorite(id)); refreshFavViews(); });
+    return b;
+  }
+  const watchFavBtn = document.getElementById("watch-fav");
+  function syncWatchFav() {
+    if (!watchFavBtn) return;
+    const on = !!targetVideoId && getDB().favorites.includes(targetVideoId);
+    watchFavBtn.classList.toggle("on", on);
+    watchFavBtn.textContent = on ? "♥" : "♡";
+    watchFavBtn.title = t(on ? "fav.remove" : "fav.add");
+  }
+  watchFavBtn.addEventListener("click", () => { if (targetVideoId) toggleFavorite(targetVideoId); });
+
+  function timeAgo(ts) {
+    const sec = Math.round((Date.now() - ts) / 1000);
+    if (sec < 60) return t("time.justnow");
+    const rtf = new Intl.RelativeTimeFormat(profile.uiLang, { numeric: "auto" });
+    if (sec < 3600) return rtf.format(-Math.round(sec / 60), "minute");
+    if (sec < 86400) return rtf.format(-Math.round(sec / 3600), "hour");
+    if (sec < 30 * 86400) return rtf.format(-Math.round(sec / 86400), "day");
+    return new Date(ts).toLocaleDateString(profile.uiLang);
+  }
+  const isFinished = (h) => h.duration > 0 && h.position / h.duration >= 0.95;
+
+  /* One history row (used on the Home page and on the History page). */
+  function makeHistoryRow(h, v, mode) {
+    mode = mode || "history";
+    const row = document.createElement("article"); row.className = "hist-row";
+    const pct = h.duration > 0 ? Math.min(100, (h.position / h.duration) * 100) : 0;
+    const when = h.at ? t("hist.watched", { when: timeAgo(h.at) }) : "";
+    const prog = isFinished(h) ? t("hist.finished") : (h.position > 3 ? `${fmtTime(h.position)}${h.duration ? " / " + fmtTime(h.duration) : ""}` : "");
+    row.innerHTML = `
+      <div class="hist-thumb"><img src="${thumbUrl(v.id)}" alt="" loading="lazy" />${pct > 1 ? `<div class="card-progress"><div class="card-progress-fill" style="width:${pct.toFixed(1)}%"></div></div>` : ""}</div>
+      <div class="hist-info">
+        <div class="hist-title">${escapeHtml(v.title || v.id)}</div>
+        <div class="hist-meta">${escapeHtml([v.author || "", when, prog].filter(Boolean).join(" · "))}</div>
+      </div>
+      <div class="hist-actions"></div>`;
+    const acts = row.querySelector(".hist-actions");
+    const fav = document.createElement("button"); fav.type = "button";
+    const paint = (on) => { fav.className = "fav" + (on ? " on" : ""); fav.textContent = on ? "♥" : "♡"; fav.title = t(on ? "fav.remove" : "fav.add"); };
+    paint(isFavorite(v.id));
+    fav.addEventListener("click", (e) => { e.stopPropagation(); paint(toggleFavorite(v.id)); if (document.body.dataset.view === "home") renderHome(); });
+    const rm = document.createElement("button"); rm.type = "button"; rm.className = "rm"; rm.textContent = "✕"; rm.title = t("hist.remove");
+    if (mode === "history") rm.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const db = getDB(); db.history = db.history.filter(x => x.id !== v.id); saveDB(db); invalidateCardCtx();
+      refreshFavViews();
+    });
+    if (mode === "favorites") {
+      rm.title = t("fav.remove");
+      rm.addEventListener("click", (e) => { e.stopPropagation(); toggleFavorite(v.id); refreshFavViews(); });
+      acts.append(rm);
+      row.addEventListener("click", () => { location.hash = `#/watch/${v.id}`; });
+      return row;
+    }
+    acts.append(fav, rm);
+    row.addEventListener("click", () => { location.hash = `#/watch/${v.id}`; });
+    return row;
+  }
+
+  /* ================================================================
+     HOME PAGE
+     ================================================================ */
+  const homeEl = document.getElementById("home-content");
+  const favoritesEl = document.getElementById("favorites-content");
+  const historyEl = document.getElementById("history-content");
+  const LEVEL_COLORS = ["#e53935", "#fb8c00", "#1e88e5", "#43a047"];
+
+  function hasSubs(id) { try { const r = localStorage.getItem(subCacheKey(id)); return !!r && r.length > 2; } catch { return false; } }
+
+  /* Videos the learner has started but not finished, most recent first. */
+  function getContinueList(db, limit) {
+    const byId = new Map(db.videos.map(v => [v.id, v]));
+    const items = db.history
+      .filter(h => byId.has(h.id) && h.position > 3 && !isFinished(h))
+      .sort((a, b) => b.at - a.at);
+    const lw = getLastWatched();   // older installs only have "last watched"
+    if (lw && byId.has(lw.videoId) && lw.position > 3 && !db.history.some(h => h.id === lw.videoId)) {
+      items.unshift({ id: lw.videoId, at: lw.at || 0, position: lw.position, duration: byId.get(lw.videoId).duration || 0 });
+    }
+    return items.slice(0, limit).map(h => ({ h, v: byId.get(h.id) }));
+  }
+
+  /* Suggestions: next-in-playlist, then favourite/watched channels, then
+     videos with subtitles, then anything not yet watched. */
+  function computeSuggestions(db, limit) {
+    const hist = new Map(db.history.map(h => [h.id, h]));
+    const byId = new Map(db.videos.map(v => [v.id, v]));
+    const out = [], used = new Set();
+    const push = (v, key, params) => { if (!v || used.has(v.id) || out.length >= limit) return false; used.add(v.id); out.push({ v, key, params: params || {} }); return true; };
+    const unseen = (v) => !hist.has(v.id);
+    const recent = [...db.history].sort((a, b) => b.at - a.at);
+
+    for (const h of recent.slice(0, 5)) {
+      for (const pl of db.playlists) {
+        const i = pl.videoIds.indexOf(h.id); if (i < 0) continue;
+        for (let j = i + 1; j < pl.videoIds.length; j++) {
+          const v = byId.get(pl.videoIds[j]);
+          if (v && unseen(v)) { push(v, "home.reason.next", { playlist: pl.title }); break; }
+        }
+      }
+    }
+    const score = new Map();
+    for (const h of db.history) { const v = byId.get(h.id); if (v && v.channelId) score.set(v.channelId, (score.get(v.channelId) || 0) + 1); }
+    for (const id of db.favorites) { const v = byId.get(id); if (v && v.channelId) score.set(v.channelId, (score.get(v.channelId) || 0) + 2); }
+    for (const [cid] of [...score.entries()].sort((a, b) => b[1] - a[1])) {
+      const name = db.channels.find(c => c.id === cid)?.name || cid;
+      let n = 0;
+      for (const v of db.videos) { if (n >= 3) break; if (v.channelId === cid && unseen(v) && push(v, "home.reason.channel", { name })) n++; }
+    }
+    const fresh = db.videos.filter(unseen).sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+    for (const v of fresh) if (hasSubs(v.id)) push(v, "home.reason.subs");
+    for (const v of fresh) push(v, "home.reason.new");
+    return out;
+  }
+
+  function homeSection(titleKey, linkHref, linkKey) {
+    const sec = document.createElement("section"); sec.className = "home-section";
+    const head = document.createElement("div"); head.className = "home-section-head";
+    head.innerHTML = `<h2>${escapeHtml(t(titleKey))}</h2>${linkHref ? `<a class="home-seeall" href="${linkHref}">${escapeHtml(t(linkKey))}</a>` : ""}`;
+    sec.appendChild(head);
+    return sec;
+  }
+  function mutedBox(text) { const d = document.createElement("div"); d.className = "home-muted"; d.textContent = text; return d; }
+  const onCardDelete = (id) => () => { removeVideoDB(id); renderHome(); updateTabCounts(); };
+
+  function renderHome() {
+    invalidateCardCtx();
+    const db = getDB();
+    homeEl.innerHTML = "";
+
+    const watchedCount = db.history.filter(h => db.videos.some(v => v.id === h.id)).length;
+    const favCount = db.favorites.filter(id => db.videos.some(v => v.id === id)).length;
+    const mastered = db.vocabulary.filter(w => clampLevel(w.level) === 4).length;
+    const head = document.createElement("div"); head.className = "home-head";
+    head.innerHTML = `
+      <div>
+        <h1 class="home-title">${langFlag(profile.learningLang)} ${escapeHtml(t("home.welcome"))}</h1>
+        <p class="home-sub">${escapeHtml(t("home.sub", { lang: langLabel(profile.learningLang) }))}</p>
+      </div>
+      <div class="home-stats">
+        <div class="home-stat"><b>${db.vocabulary.length}</b><span>${escapeHtml(t("home.stat.words"))}</span></div>
+        <div class="home-stat"><b>${mastered}</b><span>${escapeHtml(t("home.stat.mastered"))}</span></div>
+        <div class="home-stat"><b>${watchedCount}</b><span>${escapeHtml(t("home.stat.watched"))}</span></div>
+        <div class="home-stat"><b>${favCount}</b><span>${escapeHtml(t("home.stat.favorites"))}</span></div>
+      </div>`;
+    homeEl.appendChild(head);
+
+    if (!db.videos.length) {
+      const e = document.createElement("div"); e.className = "empty-state";
+      e.innerHTML = `<h2>${escapeHtml(t("home.empty.title"))}</h2><p>${escapeHtml(t("home.empty.desc"))}</p>`;
+      const b = document.createElement("button"); b.className = "add-btn"; b.textContent = t("home.empty.btn");
+      b.addEventListener("click", () => document.getElementById("open-add").click());
+      e.appendChild(b); homeEl.appendChild(e);
+      return;
+    }
+
+    /* --- Continue learning --- */
+    const cont = getContinueList(db, 5);
+    const secC = homeSection("home.continue");
+    if (!cont.length) secC.appendChild(mutedBox(t("home.continue.empty")));
+    else {
+      const { h, v } = cont[0];
+      const pct = h.duration > 0 ? Math.min(100, (h.position / h.duration) * 100) : 0;
+      const hero = document.createElement("div"); hero.className = "resume-hero";
+      hero.innerHTML = `
+        <div class="resume-thumb"><img src="${thumbUrl(v.id)}" alt="" /></div>
+        <div class="resume-info">
+          <div class="resume-label">${escapeHtml(t("home.continue.label"))}</div>
+          <div class="resume-title">${escapeHtml(v.title || v.id)}</div>
+          <div class="resume-meta">${escapeHtml(v.author || "")}${v.author ? " · " : ""}${escapeHtml(t("home.resume.at", { time: fmtTime(h.position) }))}</div>
+          ${pct > 0 ? `<div class="resume-bar"><div class="resume-bar-fill" style="width:${pct.toFixed(1)}%"></div></div>` : ""}
+        </div>`;
+      hero.addEventListener("click", () => { location.hash = `#/watch/${v.id}`; });
+      secC.appendChild(hero);
+      if (cont.length > 1) {
+        const grid = document.createElement("div"); grid.className = "grid home-continue-grid";
+        for (const { v: cv } of cont.slice(1)) grid.appendChild(makeVideoCard(cv, onCardDelete(cv.id)));
+        secC.appendChild(grid);
+      }
+    }
+    homeEl.appendChild(secC);
+
+    /* --- Suggestions --- */
+    const sugg = computeSuggestions(db, 8);
+    const secS = homeSection("home.suggest");
+    if (!sugg.length) secS.appendChild(mutedBox(t("home.suggest.empty")));
+    else {
+      const grid = document.createElement("div"); grid.className = "grid";
+      for (const { v, key, params } of sugg) {
+        const card = makeVideoCard(v, onCardDelete(v.id));
+        const r = document.createElement("div"); r.className = "card-reason"; r.textContent = t(key, params);
+        card.querySelector(".card-body").appendChild(r);
+        grid.appendChild(card);
+      }
+      secS.appendChild(grid);
+    }
+    homeEl.appendChild(secS);
+
+    /* --- Vocabulary: a pill button to the dedicated page --- */
+    const vocabCta = document.createElement("a");
+    vocabCta.className = "quick-btn"; vocabCta.href = "#/vocabulary";
+    vocabCta.innerHTML = `
+      <span class="quick-ico vocab"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
+      <span class="quick-label">${escapeHtml(t("home.vocab"))}</span>
+      <span class="quick-count">${db.vocabulary.length || ""}</span>
+      <svg class="quick-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+
+    /* --- Quick buttons: open the side drawer --- */
+    const histN = db.history.filter(h => db.videos.some(v => v.id === h.id)).length;
+    const quick = document.createElement("div"); quick.className = "home-quick";
+    const CHEV = `<svg class="quick-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+    const ICON_HIST = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>`;
+    const ICON_FAV = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+    for (const [kind, ico, icoCls, key, n] of [["history", ICON_HIST, "hist", "home.history", histN], ["favorites", ICON_FAV, "fav", "home.favorites", favCount]]) {
+      const b = document.createElement("button"); b.type = "button"; b.className = "quick-btn";
+      b.innerHTML = `<span class="quick-ico ${icoCls}">${ico}</span><span class="quick-label">${escapeHtml(t(key))}</span><span class="quick-count">${n || ""}</span>${CHEV}`;
+      b.addEventListener("click", () => openDrawer(kind));
+      quick.appendChild(b);
+    }
+    /* Order: Recently watched · Vocabulary · Favorites */
+    const actions = document.createElement("div"); actions.className = "home-actions";
+    actions.append(quick.children[0], vocabCta, quick.children[1]);
+    homeEl.appendChild(actions);
+  }
+
+  function renderFavorites() {
+    invalidateCardCtx();
+    const db = getDB();
+    favoritesEl.innerHTML = "";
+    const favs = db.favorites.map(id => db.videos.find(v => v.id === id)).filter(Boolean);
+    const bar = document.createElement("div"); bar.className = "page-toolbar";
+    bar.innerHTML = `<h2>♥ ${escapeHtml(t("tab.favorites"))} · ${escapeHtml(tn("videos.count", favs.length))}</h2>`;
+    favoritesEl.appendChild(bar);
+    if (!favs.length) {
+      const e = document.createElement("div"); e.className = "empty-state";
+      e.innerHTML = `<h2>${escapeHtml(t("fav.empty.title"))}</h2><p>${escapeHtml(t("fav.empty.desc"))}</p>`;
+      favoritesEl.appendChild(e); return;
+    }
+    const grid = document.createElement("div"); grid.className = "grid";
+    for (const v of favs) grid.appendChild(makeVideoCard(v, () => { removeVideoDB(v.id); renderFavorites(); updateTabCounts(); }));
+    favoritesEl.appendChild(grid);
+  }
+
+  function renderHistory() {
+    invalidateCardCtx();
+    const db = getDB();
+    historyEl.innerHTML = "";
+    const rows = [...db.history].sort((a, b) => b.at - a.at)
+      .map(h => ({ h, v: db.videos.find(x => x.id === h.id) })).filter(x => x.v);
+    const bar = document.createElement("div"); bar.className = "page-toolbar";
+    bar.innerHTML = `<h2>${escapeHtml(t("hist.title"))} · ${escapeHtml(tn("videos.count", rows.length))}</h2>`;
+    if (rows.length) {
+      const clear = document.createElement("button"); clear.className = "tb-btn"; clear.type = "button"; clear.textContent = t("hist.clear");
+      clear.addEventListener("click", () => {
+        if (!confirm(t("hist.clear.confirm"))) return;
+        const d = getDB(); d.history = []; saveDB(d); invalidateCardCtx(); renderHistory();
+      });
+      bar.appendChild(clear);
+    }
+    historyEl.appendChild(bar);
+    if (!rows.length) {
+      const e = document.createElement("div"); e.className = "empty-state";
+      e.innerHTML = `<h2>${escapeHtml(t("hist.empty.title"))}</h2><p>${escapeHtml(t("hist.empty.desc"))}</p>`;
+      historyEl.appendChild(e); return;
+    }
+    const list = document.createElement("div"); list.className = "hist-list";
+    for (const { h, v } of rows) list.appendChild(makeHistoryRow(h, v));
+    historyEl.appendChild(list);
+  }
+
+
+  /* ================================================================
+     SIDE DRAWER (Recently watched / Favorites)
+     ================================================================ */
+  const drawerEl = document.getElementById("side-drawer");
+  const drawerBackdrop = document.getElementById("side-backdrop");
+  const drawerTitle = document.getElementById("drawer-title");
+  const drawerBody = document.getElementById("drawer-body");
+  const drawerClear = document.getElementById("drawer-clear");
+  let drawerKind = null;
+
+  function renderDrawer() {
+    if (!drawerKind) return;
+    const db = getDB();
+    drawerBody.innerHTML = "";
+    let rows;
+    if (drawerKind === "history") {
+      rows = [...db.history].sort((a, b) => b.at - a.at).map(h => ({ h, v: db.videos.find(x => x.id === h.id) })).filter(x => x.v);
+    } else {
+      rows = db.favorites.map(id => db.videos.find(v => v.id === id)).filter(Boolean)
+        .map(v => ({ v, h: db.history.find(x => x.id === v.id) || { id: v.id, at: 0, position: 0, duration: 0 } }));
+    }
+    drawerTitle.innerHTML = `${escapeHtml(t(drawerKind === "history" ? "home.history" : "home.favorites"))} <small>${rows.length}</small>`;
+    drawerClear.hidden = !(drawerKind === "history" && rows.length);
+    drawerClear.textContent = t("hist.clear");
+    if (!rows.length) {
+      const e = document.createElement("div"); e.className = "empty-state";
+      e.innerHTML = `<p>${escapeHtml(t(drawerKind === "history" ? "home.history.empty" : "home.favorites.empty"))}</p>`;
+      drawerBody.appendChild(e); return;
+    }
+    const list = document.createElement("div"); list.className = "hist-list";
+    for (const { h, v } of rows) list.appendChild(makeHistoryRow(h, v, drawerKind));
+    drawerBody.appendChild(list);
+  }
+  function openDrawer(kind) {
+    drawerKind = kind; invalidateCardCtx(); renderDrawer();
+    drawerEl.classList.add("open"); drawerBackdrop.classList.add("open");
+    drawerEl.setAttribute("aria-hidden", "false");
+    setTimeout(() => document.getElementById("drawer-close").focus(), 50);
+  }
+  function closeDrawer() {
+    drawerKind = null;
+    drawerEl.classList.remove("open"); drawerBackdrop.classList.remove("open");
+    drawerEl.setAttribute("aria-hidden", "true");
+  }
+  drawerBackdrop.addEventListener("click", closeDrawer);
+  document.getElementById("drawer-close").addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && drawerKind) closeDrawer(); });
+  drawerClear.addEventListener("click", () => {
+    if (!confirm(t("hist.clear.confirm"))) return;
+    const d = getDB(); d.history = []; saveDB(d); invalidateCardCtx();
+    refreshFavViews();
+  });
+
   /* ================================================================
      BOOT
      ================================================================ */
@@ -3800,5 +4800,46 @@
     route();
   })();
   </script>
+
+<script>
+(function () {
+  var btn = document.getElementById("open-settings"), menu = document.getElementById("settings-menu");
+  function setOpen(o) { menu.hidden = !o; btn.setAttribute("aria-expanded", o ? "true" : "false"); }
+  btn.addEventListener("click", function (e) { e.stopPropagation(); setOpen(menu.hidden); });
+  menu.addEventListener("click", function (e) { if (e.target.closest("#open-lang, #open-backup")) setOpen(false); });
+  document.addEventListener("click", function (e) { if (!menu.hidden && !e.target.closest("#dock")) setOpen(false); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setOpen(false); });
+  window.addEventListener("hashchange", function () { setOpen(false); });
+})();
+</script>
+
+<script>
+(function () {
+  var dock = document.getElementById("dock"), msw = document.getElementById("mode-switch"), lastY = window.scrollY, ticking = false;
+  function update() {
+    var y = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
+    var nearEnd = h - y < 140, up = y < lastY - 4, down = y > lastY + 4;
+    if (y < 80 || nearEnd || up) { dock.classList.remove("away"); msw.classList.remove("away"); }
+    else if (down) { dock.classList.add("away"); msw.classList.add("away"); var m = document.getElementById("settings-menu"); if (m) m.hidden = true; }
+    if (Math.abs(y - lastY) > 4) lastY = y;
+    ticking = false;
+  }
+  window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+})();
+</script>
+
+<script>
+(function () {
+  var v = document.getElementById("mode-videos"), b = document.getElementById("mode-books"), lastVideos = "#/home";
+  function sync() {
+    var h = location.hash || "#/home", books = h.indexOf("#/book") === 0;
+    if (!books && h !== "#/") lastVideos = h;
+    v.classList.toggle("active", !books); b.classList.toggle("active", books);
+    v.setAttribute("aria-selected", !books); b.setAttribute("aria-selected", books);
+    v.setAttribute("href", lastVideos.indexOf("#/watch/") === 0 ? "#/home" : lastVideos);
+  }
+  window.addEventListener("hashchange", sync); sync();
+})();
+</script>
 </body>
 </html>
